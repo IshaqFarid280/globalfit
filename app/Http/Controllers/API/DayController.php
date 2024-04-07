@@ -162,46 +162,37 @@ class DayController extends Controller
     public function destroy(Request $request, $id){
         try {
             if ($request->request_type == 'user') {
-                $day = Day::where('program_id', $id)
+                $daysIds = Day::where('program_id', $id)
                     ->where('user_id', $request->user_id)
-                    ->first();
+                    ->pluck('id');
 
-                if ($day) {
-                    $dayId = $day->id;
-
-                    $dayExercise = DayExercise::where('day_id', $dayId)
+                if ($daysIds->isNotEmpty()) {
+                    $dayExercises = DayExercise::whereIn('day_id', $daysIds)
                         ->where('user_id', $request->user_id)
-                        ->first();
+                        ->pluck('id');
 
-                    $deletedDay = Day::where('program_id', $id)
+                    Day::where('program_id', $id)
                         ->where('user_id', $request->user_id)
                         ->delete();
 
-                    if ($dayExercise) {
-                        $dayExerciseId = $dayExercise->id;
-
-                        $set = Set::where('day_exercise_id', $dayExerciseId)
+                    if ($dayExercises->isNotEmpty()) {
+                        $setsIds = Set::whereIn('day_exercise_id', $dayExercises)
                             ->where('user_id', $request->user_id)
-                            ->first();
+                            ->pluck('id');
 
-                        DayExercise::where('day_id', $dayId)
+                        DayExercise::whereIn('day_id', $daysIds)
                             ->where('user_id', $request->user_id)
                             ->delete();
 
-                        if($set){
-                            Set::where('day_exercise_id', $dayExerciseId)
+                        if ($setsIds->isNotEmpty()) {
+                            Set::whereIn('day_exercise_id', $dayExercises)
                                 ->where('user_id', $request->user_id)
                                 ->delete();
                         }
                     }
-                } else {
-                    return errorResponse('Day not found.');
-                }
-
-                if ($deletedDay == '1') {
                     return successResponse(null, 'Successfully deleted.');
                 } else {
-                    return errorResponse('Something went wrong.');
+                    return errorResponse('Day not found.');
                 }
             }
 

@@ -67,6 +67,8 @@ class ChatMessageController extends Controller
         }
 
         try{
+            $roomId = $request->room_id;
+
             DB::transaction(function () use (&$roomId, $request) {
                 $room = Room::firstOrCreate(['id' => $roomId], ['name' => 'room'.$roomId]);
 

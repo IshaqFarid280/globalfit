@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -15,7 +16,7 @@ class CategoryController extends Controller
 
     public function store(Request $request){
         $validator = Validator::make($request->post(), [
-            'name' => 'required | string | regex:/(^([a-zA-Z]+)(\d+)?$)/u'
+            'name' => 'required | string | regex:/(^([a-zA-Z]+))/u'
         ]);
 
         if ($validator->fails()) {
@@ -55,7 +56,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id){
         $validator = Validator::make($request->post(), [
-            'name' => 'required | string | regex:/(^([a-zA-Z]+)(\d+)?$)/u'
+            'name' => 'required | string | regex:/(^([a-zA-Z]+))/u'
         ]);
 
         if ($validator->fails()) {

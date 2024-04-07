@@ -102,17 +102,13 @@ Route::group(['middleware' => 'checkSubscription'], function () {
 //    users
     Route::get('/users', [\App\Http\Controllers\API\UserController::class,'index']);
 
+//    device token
+    Route::post('/device_token', [\App\Http\Controllers\API\DeviceTokenController::class, 'store']);
+    Route::get('/device_token', [\App\Http\Controllers\API\DeviceTokenController::class, 'index']);
+
 //    notifications
     Route::get('/notification', [\App\Http\Controllers\API\NotificationController::class,'index']);
 
 //    chating
-//    Route::post('/send-message', 'ChatController@sendMessage');
-//    Route::get('/messages', 'ChatController@getMessages');
-//    Route::get('/message/{id}/edit', 'ChatController@edit');
-//    Route::post('/message/{id}', 'ChatController@update');
-//    Route::get('/message/destroy/{id}', 'ChatController@destroy');
-//
-//    Route::post('/device_token', 'DeviceTokenController@store');
-//    Route::get('/device_token', 'DeviceTokenController@index');
     Route::resource('chat-messages', ChatMessageController::class)->except(['create', 'edit']);
 });
